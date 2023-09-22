@@ -93,6 +93,10 @@ namespace PokemonGeaux
         {
             Console.Title = "PokemonGeaux";
 
+            SoundPlayer start = new SoundPlayer();
+            start.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + @"Resources\Polyphia8bit.wav";
+            start.Play();
+
             Console.WriteLine("\t\t\t                                  ,'\\");
             Console.WriteLine("\t\t\t    _.----.        ____         ,'  _\\   ___    ___     ____");
             Console.WriteLine("\t\t\t_,-'       `.     |    |  /`.   \\,-'    |   \\  /   |   |    \\  |`.");

@@ -5,16 +5,35 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <ApplicationIcon>bin\Debug\net6.0\Pokemon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Pokemon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="bin\Debug\net6.0\Pokemon.ico" />
+    <None Remove="Resources\Polyphia - Copy.wav" />
+    <None Remove="Resources\Polyphia.wav" />
+    <None Remove="Resources\Polyphia8bit.wav" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Pokemon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Polyphia8bit.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Windows.Extensions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="bin\Debug\net6.0\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Polyphia.wav" />
   </ItemGroup>
 
 </Project>

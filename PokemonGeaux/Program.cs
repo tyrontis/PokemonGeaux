@@ -9,10 +9,6 @@ namespace PokemonGeaux
         {
             ShowTitle();
 
-            SoundPlayer start = new SoundPlayer();
-            start.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "Polyphia.wav";
-            start.Play();
-
             while (true)
             {
                 Console.WriteLine("Please enter a Pokemon's Name or ID. Type 'exit' to quit.");

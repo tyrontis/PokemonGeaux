@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Media;
 
 namespace PokemonGeaux
 {
@@ -7,6 +8,10 @@ namespace PokemonGeaux
         static async Task Main(string[] args)
         {
             ShowTitle();
+
+            SoundPlayer start = new SoundPlayer();
+            start.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "Polyphia.wav";
+            start.Play();
 
             while (true)
             {
@@ -35,8 +40,6 @@ namespace PokemonGeaux
                         {
                             string content = await response.Content.ReadAsStringAsync();
                             JObject pokemonData = JObject.Parse(content);
-
-                            string capitalizedPokemonName = char.ToUpper(pokemonName[0]) + pokemonName.Substring(1);
 
                             JArray types = pokemonData["types"] as JArray;
                             if (types != null)
@@ -92,6 +95,8 @@ namespace PokemonGeaux
 
         static void ShowTitle()
         {
+            Console.Title = "PokemonGeaux";
+
             Console.WriteLine("\t\t\t                                  ,'\\");
             Console.WriteLine("\t\t\t    _.----.        ____         ,'  _\\   ___    ___     ____");
             Console.WriteLine("\t\t\t_,-'       `.     |    |  /`.   \\,-'    |   \\  /   |   |    \\  |`.");

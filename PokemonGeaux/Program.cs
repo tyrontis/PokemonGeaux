@@ -1,5 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
 using System.Media;
+using PokemonGeaux.Models;
 
 namespace PokemonGeaux
 {
@@ -11,7 +12,7 @@ namespace PokemonGeaux
 
             while (true)
             {
-                Console.WriteLine("Please enter a Pokemon's Name or ID. Type 'exit' to quit.");
+                Console.WriteLine("\nPlease enter a Pokemon's Name or ID. Type 'exit' to quit.");
                 string pokemonName = Console.ReadLine();
 
                 if (pokemonName.ToLower() == "exit")
@@ -30,48 +31,46 @@ namespace PokemonGeaux
                     using (HttpClient client = new HttpClient())
                     {
                         string apiUrl = $"https://pokeapi.co/api/v2/pokemon/{pokemonName.ToLower()}";
-                        HttpResponseMessage response = await client.GetAsync(apiUrl);
+                        var response = await client.GetAsync(apiUrl);
 
                         if (response.IsSuccessStatusCode)
                         {
                             string content = await response.Content.ReadAsStringAsync();
-                            JObject pokemonData = JObject.Parse(content);
+                            var thisPokemon = JsonConvert.DeserializeObject<PokemonPayload>(content);
 
-                            JArray types = pokemonData["types"] as JArray;
-                            if (types != null)
+                            Console.WriteLine($"\nPokemon Name: {char.ToUpper(thisPokemon.Name[0]) + thisPokemon.Name.Substring(1)}");
+                            Console.WriteLine($"Pokemon ID: {thisPokemon.Id}");
+                            Console.WriteLine("\nTypes:");
+                            foreach (var type in thisPokemon.Types)
                             {
-                                foreach (var type in types)
+                                Console.WriteLine($"- {char.ToUpper(type.Type.Name[0]) + type.Type.Name.Substring(1)}");
+                            }
+
+                            // Type
+                            foreach (var type in thisPokemon.Types)
+                            {
+                                string typeUrl = $"https://pokeapi.co/api/v2/type/{type.Type.Name.ToLower()}";
+                                var typeResponse = await client.GetAsync(typeUrl);
+
+                                if (typeResponse.IsSuccessStatusCode)
                                 {
-                                    string typeName = type["type"]["name"].ToString();
-                                    Console.WriteLine($"\nType: {char.ToUpper(typeName[0]) + typeName.Substring(1)}");
+                                    string typeContent = await typeResponse.Content.ReadAsStringAsync();
+                                    var typeData = JsonConvert.DeserializeObject<PokemonPayload>(typeContent);
 
-                                    // Type
-                                    string typeUrl = $"https://pokeapi.co/api/v2/type/{typeName}";
-                                    HttpResponseMessage typeResponse = await client.GetAsync(typeUrl);
-
-                                    if (typeResponse.IsSuccessStatusCode)
+                                    // Strengths
+                                    Console.WriteLine("\nStrengths:");
+                                    foreach (var strength in typeData.DamageRelations.DoubleDamageTo)
                                     {
-                                        string typeContent = await typeResponse.Content.ReadAsStringAsync();
-                                        JObject typeData = JObject.Parse(typeContent);
+                                        string strengthName = strength.Name.ToString();
+                                        Console.WriteLine($"- {char.ToUpper(strengthName[0]) + strengthName.Substring(1)}");
+                                    }
 
-                                        // Strength/Weakness
-                                        var damageRelations = typeData["damage_relations"];
-                                        Console.WriteLine($"\nStrengths:");
-
-                                        foreach (var strength in damageRelations["double_damage_to"])
-                                        {
-                                            string strengthName = strength["name"].ToString();
-                                            Console.WriteLine($"- {char.ToUpper(strengthName[0]) + strengthName.Substring(1)}");
-                                        }
-
-                                        Console.WriteLine($"\nWeaknesses:");
-                                        foreach (var weakness in damageRelations["double_damage_from"])
-                                        {
-                                            string weaknessName = weakness["name"].ToString();
-                                            Console.WriteLine($"- {char.ToUpper(weaknessName[0]) + weaknessName.Substring(1)}");
-                                        }
-
-                                        Console.WriteLine("");
+                                    // Weaknesses
+                                    Console.WriteLine("\nWeaknesses:");
+                                    foreach (var weakness in typeData.DamageRelations.DoubleDamageFrom)
+                                    {
+                                        string weaknessName = weakness.Name.ToString();
+                                        Console.WriteLine($"- {char.ToUpper(weaknessName[0]) + weaknessName.Substring(1)}");
                                     }
                                 }
                             }
